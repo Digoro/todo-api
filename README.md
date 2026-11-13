@@ -82,8 +82,3 @@ curl http://localhost:3000/tasks
 curl -X PATCH http://localhost:3000/tasks/1/complete
 curl -X DELETE http://localhost:3000/tasks/1
 ```
-
-## 알려진 제한 사항
-
-- 요청 본문 유효성 검증이 없습니다(`title` 누락 시에도 생성됨).
-- 존재하지 않는 `id`를 조회·완료 처리하면 404가 아닌 서버 오류(500)가 발생합니다.
