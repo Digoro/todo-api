@@ -28,6 +28,27 @@ describe('TasksService', () => {
     expect(tasks.map((t) => t.title)).toEqual(['a', 'b']);
   });
 
+  describe('findAll with status filter', () => {
+    beforeEach(() => {
+      service.create({ title: 'a' });
+      const { id } = service.create({ title: 'b' });
+      service.create({ title: 'c' });
+      service.complete(id);
+    });
+
+    it('returns only done tasks', () => {
+      expect(service.findAll('done').map((t) => t.title)).toEqual(['b']);
+    });
+
+    it('returns only todo tasks', () => {
+      expect(service.findAll('todo').map((t) => t.title)).toEqual(['a', 'c']);
+    });
+
+    it('returns all tasks when status is omitted', () => {
+      expect(service.findAll()).toHaveLength(3);
+    });
+  });
+
   it('completes a task', () => {
     const { id } = service.create({ title: 'a' });
     expect(service.complete(id).status).toBe('done');
