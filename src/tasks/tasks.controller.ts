@@ -1,5 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { createTaskSchema, type CreateTaskDto } from './dto/create-task.dto.js';
+import {
+  findTasksQuerySchema,
+  type FindTasksQueryDto,
+} from './dto/find-tasks-query.dto.js';
 import { TasksService } from './tasks.service.js';
 
 @Controller('tasks')
@@ -12,8 +16,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  findAll(@Query({ schema: findTasksQuerySchema }) query: FindTasksQueryDto) {
+    return this.tasksService.findAll(query.status);
   }
 
   @Get(':id')
