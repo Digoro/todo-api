@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto.js';
+import { createTaskSchema, type CreateTaskDto } from './dto/create-task.dto.js';
 import { TasksService } from './tasks.service.js';
 
 @Controller('tasks')
@@ -7,7 +7,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() dto: CreateTaskDto) {
+  create(@Body({ schema: createTaskSchema }) dto: CreateTaskDto) {
     return this.tasksService.create(dto);
   }
 
