@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service.js';
 
@@ -32,5 +33,13 @@ describe('TasksService', () => {
     const { id } = service.create({ title: 'a' });
     expect(service.complete(id).status).toBe('done');
     expect(service.findOne(id).status).toBe('done');
+  });
+
+  it('throws NotFoundException when finding a task that does not exist', () => {
+    expect(() => service.findOne(999)).toThrow(NotFoundException);
+  });
+
+  it('throws NotFoundException when completing a task that does not exist', () => {
+    expect(() => service.complete(999)).toThrow(NotFoundException);
   });
 });

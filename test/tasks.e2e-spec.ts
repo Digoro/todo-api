@@ -20,6 +20,16 @@ describe('POST /tasks (e2e)', () => {
     await app.close();
   });
 
+  it('returns 404 for GET /tasks/:id when the task does not exist', () => {
+    return request(app.getHttpServer()).get('/tasks/999').expect(404);
+  });
+
+  it('returns 404 for PATCH /tasks/:id/complete when the task does not exist', () => {
+    return request(app.getHttpServer())
+      .patch('/tasks/999/complete')
+      .expect(404);
+  });
+
   it('creates a task with a valid title', async () => {
     const res = await request(app.getHttpServer())
       .post('/tasks')
