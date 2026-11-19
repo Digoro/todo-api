@@ -58,7 +58,7 @@ npm run lint
 | ------ | ---- | ---- | --------- | ---- |
 | GET | `/` | 기본 인사 메시지 | - | 문자열 |
 | POST | `/tasks` | 할 일 생성 | `{ "title": "string" }` | 생성된 할 일 |
-| GET | `/tasks` | 할 일 전체 조회 | - | 할 일 배열 |
+| GET | `/tasks` | 할 일 조회 (`?status=todo` 또는 `?status=done`으로 상태별 필터, 생략하면 전체) | - | 할 일 배열 |
 | GET | `/tasks/:id` | 할 일 단건 조회 | - | `id`, `title`, `status`, `createdAt` |
 | PATCH | `/tasks/:id/complete` | 할 일 완료 처리 | - | 완료된 할 일 |
 | DELETE | `/tasks/:id` | 할 일 삭제 | - | 없음 |

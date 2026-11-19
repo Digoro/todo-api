@@ -4,6 +4,60 @@ import request from 'supertest';
 import { App } from 'supertest/types.js';
 import { AppModule } from './../src/app.module.js';
 
+describe('GET /tasks?status= (e2e)', () => {
+  let app: INestApplication<App>;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+
+    const server = app.getHttpServer();
+    await request(server).post('/tasks').send({ title: 'a' });
+    const b = await request(server).post('/tasks').send({ title: 'b' });
+    await request(server).post('/tasks').send({ title: 'c' });
+    await request(server).patch(`/tasks/${b.body.id}/complete`).expect(200);
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  const titles = (body: { title: string }[]) => body.map((t) => t.title);
+
+  it('returns all tasks without a status', async () => {
+    const res = await request(app.getHttpServer()).get('/tasks').expect(200);
+    expect(titles(res.body)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('returns only done tasks for status=done', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/tasks?status=done')
+      .expect(200);
+    expect(titles(res.body)).toEqual(['b']);
+  });
+
+  it('returns only todo tasks for status=todo', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/tasks?status=todo')
+      .expect(200);
+    expect(titles(res.body)).toEqual(['a', 'c']);
+  });
+
+  it('returns 400 for an unknown status', () => {
+    return request(app.getHttpServer()).get('/tasks?status=foo').expect(400);
+  });
+
+  it('returns 400 when status is given more than once', () => {
+    return request(app.getHttpServer())
+      .get('/tasks?status=todo&status=done')
+      .expect(400);
+  });
+});
+
 describe('POST /tasks (e2e)', () => {
   let app: INestApplication<App>;
 

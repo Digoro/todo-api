@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto.js';
-import { Task } from './task.interface.js';
+import { Task, TaskStatus } from './task.interface.js';
 
 @Injectable()
 export class TasksService {
@@ -18,8 +18,11 @@ export class TasksService {
     return task;
   }
 
-  findAll(): Task[] {
-    return this.tasks;
+  findAll(status?: TaskStatus): Task[] {
+    if (status === undefined) {
+      return this.tasks;
+    }
+    return this.tasks.filter((t) => t.status === status);
   }
 
   findOne(id: number): Task {
